@@ -13,7 +13,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Set Labels
-        uses: outoforbitdev/action-label-manager
+        uses: outoforbitdev/action-label-manager@f9a888a1a58a7cf72333677bba6c13c549bc4a91 # v0.0.1
         id: set-labels
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
