@@ -1,0 +1,19 @@
+name: Labels
+permissions: read-all
+on: [issues, pull_request]
+jobs:
+  sync-labels:
+    permissions:
+        issues: write
+    runs-on: ubuntu-latest
+    name: Test Action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set Labels
+        uses: outoforbitdev/action-label-manager
+        id: set-labels
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
