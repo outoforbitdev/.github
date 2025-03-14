@@ -1,6 +1,14 @@
 name: Labels
 permissions: read-all
-on: [issues, pull_request]
+on:
+  issues: 
+    types:
+      - opened
+      - labeled
+  pull_request:
+    types:
+      - opened
+      - labeled
 jobs:
   sync-labels:
     permissions:
@@ -13,7 +21,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Set Labels
-        uses: outoforbitdev/action-label-manager@f24babe4b405f7926996b5a42bbc4ae3b962dd4e # v0.0.1
+        uses: outoforbitdev/action-label-manager@082ee285fd9918136bfa237a5cdccb78e7333538 # v0.0.2
         id: set-labels
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
