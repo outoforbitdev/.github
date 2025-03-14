@@ -6,14 +6,14 @@ jobs:
     permissions:
         issues: write
     runs-on: ubuntu-latest
-    name: Test Action
+    name: Sync Labels
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Set Labels
-        uses: outoforbitdev/action-label-manager@f9a888a1a58a7cf72333677bba6c13c549bc4a91 # v0.0.1
+        uses: outoforbitdev/action-label-manager@a07a5dd2417e156218fa0c6ae0a9e4ded31f2714 # v0.0.1
         id: set-labels
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
