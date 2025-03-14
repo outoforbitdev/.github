@@ -1,6 +1,7 @@
 name: Labels
 permissions: read-all
 on:
+  workflow_call:
   issues: 
     types:
       - opened
