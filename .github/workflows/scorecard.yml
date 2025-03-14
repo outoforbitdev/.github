@@ -13,7 +13,6 @@ on:
     - cron: "42 7 * * 4"
   push:
     branches: ["main"]
-  pull_request:
   workflow_call:
     secrets:
       scorecard_token:
