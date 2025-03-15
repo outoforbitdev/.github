@@ -1,7 +1,5 @@
-name: Labels
-permissions: read-all
+name: Sync Labels
 on:
-  workflow_call:
   issues: 
     types:
       - opened
@@ -10,19 +8,12 @@ on:
     types:
       - opened
       - labeled
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
-  sync-labels:
+  labels:
+    uses: outoforbitdev/reusable-workflows-library/.github/workflows/label-manager.yml@8fb3405555561af2c714e9d54dc5b9bbe3dd92f8 # v1.0.0
     permissions:
-        issues: write
-    runs-on: ubuntu-latest
-    name: Sync Labels
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Set Labels
-        uses: outoforbitdev/action-label-manager@082ee285fd9918136bfa237a5cdccb78e7333538 # v0.0.2
-        id: set-labels
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+      issues: write
