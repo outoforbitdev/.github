@@ -4,7 +4,10 @@ on:
     types:
       - opened
       - labeled
-  pull_request: {}
+  pull_request:
+    types:
+      - opened
+      - labeled
 
 # Declare default permissions as read only.
 permissions: read-all
