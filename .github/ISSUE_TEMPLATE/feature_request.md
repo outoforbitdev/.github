@@ -1,7 +1,7 @@
 ---
-name: :rocket: Feature request
-about: Request a new feature :bulb:
-labels: type: feature
+name: ':rocket: Feature request'
+about: 'Request a new feature :bulb:'
+labels: 'type: feature'
 ---
 
 ## Context

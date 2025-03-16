@@ -1,7 +1,7 @@
 ---
-name: :bug: Bug report
-about: Report something that is not working :wrench:
-labels: type: bug
+name: ':bug: Bug report'
+about: 'Report something that is not working :wrench:'
+labels: 'type: bug'
 ---
 
 ## Expected Behavior
