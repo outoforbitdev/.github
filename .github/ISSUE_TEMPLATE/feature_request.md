@@ -1,6 +1,6 @@
 ---
-name: ':rocket: Feature request'
-about: 'Request a new feature :bulb:'
+name: '🚀 Feature request'
+about: 'Request a new feature 💡'
 labels: 'type: feature'
 ---
 

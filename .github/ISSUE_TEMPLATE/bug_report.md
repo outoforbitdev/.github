@@ -1,6 +1,6 @@
 ---
-name: ':bug: Bug report'
-about: 'Report something that is not working :wrench:'
+name: '🐛 Bug report'
+about: 'Report something that is not working 🔧'
 labels: 'type: bug'
 ---
 
