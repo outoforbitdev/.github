@@ -301,7 +301,32 @@ Display workflow status badges in your repository's main README.md:
 
 Organization-level workflow status can be viewed in a centralized dashboard once scripts are in place.
 
-## G-05: Git Hooks
+## G-05: GitHub Workflow Triggers
+
+All required GitHub Actions workflows must have the correct triggers configured to ensure they run at the appropriate times.
+
+### Trigger Requirements
+
+**Test Workflow** (`.github/workflows/test.yml`):
+- `pull_request` — Trigger on all pull requests
+- `push` to `main` branch — Trigger on commits to main
+- `workflow_dispatch` — Manual trigger capability
+
+**Scorecard Workflow** (`.github/workflows/scorecard.yml`):
+- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0`
+- `push` to `main` branch — Trigger on commits to main
+- `branch_protection_rule` — Trigger on branch protection rule changes
+- `workflow_dispatch` — Manual trigger capability
+
+**Cron Schedule Requirement:** The schedule must run at least weekly (7 days or less between runs) to maintain security and compliance visibility.
+
+**Release Workflow** (`.github/workflows/release.yml` or `npm_publish.yml`):
+- `push` to `main` branch — Trigger on commits to main
+- `workflow_dispatch` — Manual trigger capability
+
+These triggers ensure that code quality checks run on every PR, security assessments run on schedule and main updates, and releases are created automatically when code is merged.
+
+## G-06: Git Hooks
 
 Git hooks help maintain code quality and consistency by automatically checking commits before they are created.
 
@@ -352,7 +377,8 @@ An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot
 - **G-02: Justfile Commands** — Verifies Justfile has required commands (setup, install, test, lint, lint-write, gate)
 - **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
 - **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
-- **G-05: Git Hooks & Conventional Commits** — Verifies `.husky/` directory and commit lint configuration
+- **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
+- **G-06: Git Hooks & Conventional Commits** — Verifies `.husky/` directory and commit lint configuration
 
 ### How the Process Works
 

@@ -39,7 +39,7 @@ async function runCheck(repoPath, check) {
     case 'directory-exists':
       return checkDirectoryExists(repoPath, check.path);
     case 'file-exists':
-      return checkFileExists(repoPath, check.path, check.paths, check.require-one);
+      return checkFileExists(repoPath, check.path, check.paths, check['require-one']);
     case 'file-contains':
       return checkFileContains(repoPath, check.path, check.patterns);
     default:

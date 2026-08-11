@@ -73,6 +73,30 @@ guidelines:
         require-one: true
 
   - id: "G-05"
+    name: "GitHub Workflow Triggers"
+    description: "Required workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)"
+    enabled: true
+    checks:
+      - type: "file-contains"
+        path: ".github/workflows/test.yml"
+        patterns:
+          - "pull_request:"
+          - "push:"
+          - "workflow_dispatch"
+      - type: "file-contains"
+        path: ".github/workflows/scorecard.yml"
+        patterns:
+          - "schedule:"
+          - "cron:"
+          - "push:"
+          - "workflow_dispatch"
+      - type: "file-contains"
+        path: ".github/workflows/release.yml"
+        patterns:
+          - "push:"
+          - "workflow_dispatch"
+
+  - id: "G-06"
     name: "Git Hooks & Conventional Commits"
     description: "Repository is configured with git hooks (Husky) and conventional commits enforcement"
     enabled: true
