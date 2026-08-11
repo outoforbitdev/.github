@@ -1,0 +1,102 @@
+# Organization Guideline Verification Configuration
+# Defines which guidelines to check, file patterns, and repository exclusions
+
+organization: outoforbitdev
+
+# Repository filtering
+repository-filter:
+  # Skip archived repositories
+  skip-archived: true
+  # Skip private repositories (set to false to include private repos)
+  skip-private: true
+  # Skip forked repositories
+  skip-forks: true
+
+# Repositories to exclude from checks (by name)
+excluded-repositories:
+  # Example: add repo names that should not be checked
+  # - example-repo
+  # - archived-test
+
+# Guidelines to verify
+guidelines:
+  - id: "G-01"
+    name: "Documentation Structure"
+    description: "Repository follows consistent documentation structure with docs/internal/ directory"
+    enabled: true
+    checks:
+      - type: "directory-exists"
+        path: "docs/internal"
+      - type: "file-exists"
+        path: "docs/README.md"
+      - type: "file-exists"
+        path: "docs/internal/README.md"
+
+  - id: "G-02"
+    name: "Justfile Commands"
+    description: "Repository includes Justfile with required commands"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: "Justfile"
+      - type: "file-contains"
+        path: "Justfile"
+        patterns:
+          - "^setup:"
+          - "^install:"
+          - "^test:"
+          - "^lint:"
+          - "^lint-write:"
+          - "^gate:"
+
+  - id: "G-03"
+    name: "Dependabot Configuration"
+    description: "Repository is configured with Dependabot for automated dependency updates"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: ".github/dependabot.yml"
+
+  - id: "G-04"
+    name: "GitHub Workflows"
+    description: "Repository includes required GitHub Actions workflows (test, scorecard, release)"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: ".github/workflows/scorecard.yml"
+      - type: "file-exists"
+        path: ".github/workflows/test.yml"
+      - type: "file-exists"
+        paths:
+          - ".github/workflows/release.yml"
+          - ".github/workflows/npm_publish.yml"
+        require-one: true
+
+  - id: "G-05"
+    name: "Git Hooks & Conventional Commits"
+    description: "Repository is configured with git hooks (Husky) and conventional commits enforcement"
+    enabled: true
+    checks:
+      - type: "directory-exists"
+        path: ".husky"
+      - type: "file-exists"
+        paths:
+          - ".commitlintrc.js"
+          - "commitlint.config.js"
+          - ".commitlintrc.json"
+        require-one: true
+
+# Issue creation settings
+issue-creation:
+  # Enable automatic issue creation for unmet guidelines
+  enabled: false
+  # Labels to add to created issues
+  labels:
+    - "guideline-check"
+  # Include guideline number in issue title for easy reference
+  include-guideline-number: true
+  # Prefix for issue titles (e.g., "[Guideline Check] G-01: ...")
+  title-prefix: "[Guideline Check]"
+
+# Dry-run mode (preview issues without creating them)
+dry-run: false

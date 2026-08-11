@@ -6,7 +6,7 @@ This document outlines the standards and best practices for all repositories in 
 2. **Standardized workflows**: Uniform configurations enable standardized agentic workflows and tooling.
 3. **Safety and security**: Consistent security practices across all repositories reduce organizational risk.
 
-## Documentation Structure
+## G-01: Documentation Structure
 
 All repositories should follow a consistent documentation structure to aid discoverability and navigation.
 
@@ -77,7 +77,7 @@ docs/
 
 Refer to the [library-galaxy-map](https://github.com/outoforbitdev/library-galaxy-map/tree/main/docs) repository for an exemplary documentation structure.
 
-## Justfile Commands
+## G-02: Justfile Commands
 
 All repositories should include a `justfile` with the following standard commands for consistency across the organization:
 
@@ -125,7 +125,7 @@ gate: test lint
     npm run type-check
 ```
 
-## Dependabot Configuration
+## G-03: Dependabot Configuration
 
 Every repository must run Dependabot to automate dependency updates and maintain security.
 
@@ -167,7 +167,7 @@ updates:
 
 Adjust the `package-ecosystem`, `reviewers`, and other fields as appropriate for your repository.
 
-## GitHub Workflows
+## G-04: GitHub Workflows
 
 All repositories should include the following standardized GitHub Actions workflows. These workflows enable visibility into repository health and status across the organization.
 
@@ -301,7 +301,7 @@ Display workflow status badges in your repository's main README.md:
 
 Organization-level workflow status can be viewed in a centralized dashboard once scripts are in place.
 
-## Git Hooks
+## G-05: Git Hooks
 
 Git hooks help maintain code quality and consistency by automatically checking commits before they are created.
 
@@ -344,12 +344,40 @@ The organization follows Conventional Commits format. Pre-commit hooks should en
 
 ## Compliance Checking
 
-The organization plans to implement:
+### Automated Guideline Verification
 
-1. **Automated Script**: A script to check compliance with these guidelines across all repositories.
-2. **Agent-based Evaluation**: An agent prompt to evaluate less-deterministic guidelines on-demand (when tokens are available).
+An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
 
-Repository maintainers should regularly review this document and ensure their repositories meet all guidelines.
+- **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
+- **G-02: Justfile Commands** — Verifies Justfile has required commands (setup, install, test, lint, lint-write, gate)
+- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
+- **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
+- **G-05: Git Hooks & Conventional Commits** — Verifies `.husky/` directory and commit lint configuration
+
+### How the Process Works
+
+1. **Automated Scanning**: The script runs on a cron schedule and checks all repositories in the organization
+2. **Issue Creation**: If guidelines are not met, GitHub issues are automatically created in the non-compliant repositories
+3. **Duplicate Prevention**: The script checks for existing issues to avoid creating duplicates
+4. **Status Tracking**: Issues are labeled with guideline IDs for easy tracking and filtering
+
+### Resolving Guideline Violations
+
+If your repository receives a guideline violation issue:
+
+1. Read the issue description to understand which guideline is not met
+2. Review the specific section in this document for implementation instructions
+3. Make the necessary changes to your repository
+4. Commit and push your changes
+5. The guideline check will verify compliance on the next scheduled run (weekly)
+
+### Future Enhancements
+
+- **Agent-based Evaluation**: An agent prompt to evaluate less-deterministic guidelines on-demand (when tokens are available), such as documentation quality and code standards compliance.
+
+### Manual Compliance Check
+
+Repository maintainers should regularly review this document and can run manual compliance checks using the guideline verification script in the `.github` repository.
 
 ## Migration Path
 
