@@ -308,21 +308,21 @@ All required GitHub Actions workflows must have the correct triggers configured 
 ### Trigger Requirements
 
 **Test Workflow** (`.github/workflows/test.yml`):
-- `pull_request` — Trigger on all pull requests
-- `push` to `main` branch — Trigger on commits to main
-- `workflow_dispatch` — Manual trigger capability
+- `pull_request` — Trigger on all pull requests (required)
+- `push` to `main` branch — Trigger on commits to main (required)
+- `workflow_dispatch` — Manual trigger capability (optional)
 
 **Scorecard Workflow** (`.github/workflows/scorecard.yml`):
-- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0`
-- `push` to `main` branch — Trigger on commits to main
-- `branch_protection_rule` — Trigger on branch protection rule changes
-- `workflow_dispatch` — Manual trigger capability
+- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0` (required)
+- `push` to `main` branch — Trigger on commits to main (required)
+- `branch_protection_rule` — Trigger on branch protection rule changes (optional)
+- `workflow_dispatch` — Manual trigger capability (optional)
 
 **Cron Schedule Requirement:** The schedule must run at least weekly (7 days or less between runs) to maintain security and compliance visibility.
 
 **Release Workflow** (`.github/workflows/release.yml` or `npm_publish.yml`):
-- `push` to `main` branch — Trigger on commits to main
-- `workflow_dispatch` — Manual trigger capability
+- `push` to `main` branch — Trigger on commits to main (required)
+- `workflow_dispatch` — Manual trigger capability (optional)
 
 These triggers ensure that code quality checks run on every PR, security assessments run on schedule and main updates, and releases are created automatically when code is merged.
 

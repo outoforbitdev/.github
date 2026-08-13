@@ -14,7 +14,9 @@ repository-filter:
 
 # Repositories to exclude from checks (by name)
 excluded-repositories:
-  # Example: add repo names that should not be checked
+  # The .github repo has different requirements (it hosts the guideline script itself)
+  - .github
+  # Add other repos to exclude as needed
   # - example-repo
   # - archived-test
 
@@ -80,21 +82,18 @@ guidelines:
       - type: "file-contains"
         path: ".github/workflows/test.yml"
         patterns:
-          - "pull_request:"
-          - "push:"
-          - "workflow_dispatch"
+          - "pull_request"
+          - "push"
       - type: "file-contains"
         path: ".github/workflows/scorecard.yml"
         patterns:
           - "schedule:"
           - "cron:"
-          - "push:"
-          - "workflow_dispatch"
+          - "push"
       - type: "file-contains"
         path: ".github/workflows/release.yml"
         patterns:
-          - "push:"
-          - "workflow_dispatch"
+          - "push"
 
   - id: "G-06"
     name: "Git Hooks & Conventional Commits"
