@@ -326,46 +326,71 @@ All required GitHub Actions workflows must have the correct triggers configured 
 
 These triggers ensure that code quality checks run on every PR, security assessments run on schedule and main updates, and releases are created automatically when code is merged.
 
-## G-06: Git Hooks
+## G-06: Git Hooks & Conventional Commits
 
-Git hooks help maintain code quality and consistency by automatically checking commits before they are created.
+Git hooks help maintain code quality and consistency by automatically checking commits before they are created. All repositories must use [pre-commit](https://pre-commit.com/) for git hook management.
 
-### Recommended Tool: Husky
+Pre-commit is a language-agnostic framework that works with any programming language, making it ideal for polyglot repositories and consistent across the organization.
 
-The current recommended approach for implementing git hooks is [Husky](https://typicode.github.io/husky/), which provides an easy-to-use interface for managing git hooks in JavaScript/Node.js projects.
+### Setup Instructions
 
-### Setup Instructions (Using Husky)
-
-1. Install Husky (typically done in the `setup` justfile target):
+1. Install pre-commit:
    ```bash
-   npm install husky --save-dev
-   npx husky install
+   brew install pre-commit  # macOS
+   pip install pre-commit   # Linux/Python
    ```
 
-2. Add hooks as needed:
-   ```bash
-   # Example: Add commit message linting
-   npx husky add .husky/commit-msg 'npx commitlint --edit "$1"'
-   
-   # Example: Add pre-commit linting and tests
-   npx husky add .husky/pre-commit 'npm run lint && npm test'
+2. Create `.pre-commit-config.yaml` in your repository root with conventional commits enforcement:
+   ```yaml
+   repos:
+     - repo: https://github.com/compilerla/conventional-pre-commit
+       rev: v2.4.0
+       hooks:
+         - id: conventional-pre-commit
+           stages: [commit-msg]
+     
+     # Add other hooks as needed for your project
+     - repo: https://github.com/pre-commit/pre-commit-hooks
+       rev: v4.5.0
+       hooks:
+         - id: trailing-whitespace
+         - id: end-of-file-fixer
+         - id: check-yaml
    ```
 
-3. Configure `commitlint` in your `package.json` or create a `commitlintrc.js` file to enforce conventional commits.
+3. Install the git hooks:
+   ```bash
+   pre-commit install --hook-type commit-msg
+   ```
 
-### Future Evaluation
+4. Test the setup:
+   ```bash
+   pre-commit run --all-files
+   ```
 
-This recommendation is currently being evaluated and may be revised before becoming a hard requirement. Other solutions like the `pre-commit` framework are suitable alternatives depending on project language and needs.
+### Conventional Commits Standard
 
-### Conventional Commits
-
-The organization follows Conventional Commits format. Pre-commit hooks should enforce this.
+All commits must follow the Conventional Commits format:
 
 **Format**: `<type>(<scope>): <subject>`
 
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`
 
 **Example**: `feat(auth): add JWT token refresh mechanism`
+
+### Migration from Husky
+
+Repositories currently using Husky should migrate to pre-commit:
+
+1. Remove Husky: `npm uninstall husky`
+2. Remove `.husky/` directory: `rm -rf .husky/`
+3. Remove husky hooks from `package.json`
+4. Set up pre-commit as described above
+5. Add `.pre-commit-config.yaml` to version control
+
+### Verification
+
+The automated guideline checker verifies that all repositories have `.pre-commit-config.yaml` configured with conventional commits enforcement via `conventional-pre-commit`.
 
 ## Compliance Checking
 
@@ -378,7 +403,7 @@ An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot
 - **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
 - **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
 - **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
-- **G-06: Git Hooks & Conventional Commits** — Verifies `.husky/` directory and commit lint configuration
+- **G-06: Git Hooks & Conventional Commits** — Verifies `.pre-commit-config.yaml` exists and includes `conventional-pre-commit` for commit message enforcement
 
 ### How the Process Works
 

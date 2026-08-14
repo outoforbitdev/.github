@@ -97,17 +97,17 @@ guidelines:
 
   - id: "G-06"
     name: "Git Hooks & Conventional Commits"
-    description: "Repository is configured with git hooks (Husky) and conventional commits enforcement"
+    description: "Repository uses pre-commit for git hooks with conventional commits enforcement"
     enabled: true
     checks:
-      - type: "directory-exists"
-        path: ".husky"
+      # Check for pre-commit configuration file
       - type: "file-exists"
-        paths:
-          - ".commitlintrc.js"
-          - "commitlint.config.js"
-          - ".commitlintrc.json"
-        require-one: true
+        path: ".pre-commit-config.yaml"
+      # Check that pre-commit config includes conventional-pre-commit for commit message linting
+      - type: "file-contains"
+        path: ".pre-commit-config.yaml"
+        patterns:
+          - "conventional-pre-commit"
 
 # Issue creation settings
 issue-creation:
