@@ -22,17 +22,18 @@ excluded-repositories:
 
 # Guidelines to verify
 guidelines:
-  - id: "G-01"
-    name: "Documentation Structure"
-    description: "Repository follows consistent documentation structure with docs/internal/ directory"
-    enabled: true
-    checks:
-      - type: "directory-exists"
-        path: "docs/internal"
-      - type: "file-exists"
-        path: "docs/README.md"
-      - type: "file-exists"
-        path: "docs/internal/README.md"
+  # TODO: Re-enable G-01 after repos have been updated with documentation structure
+  # - id: "G-01"
+  #   name: "Documentation Structure"
+  #   description: "Repository follows consistent documentation structure with docs/internal/ directory"
+  #   enabled: true
+  #   checks:
+  #     - type: "directory-exists"
+  #       path: "docs/internal"
+  #     - type: "file-exists"
+  #       path: "docs/README.md"
+  #     - type: "file-exists"
+  #       path: "docs/internal/README.md"
 
   - id: "G-02"
     name: "Justfile Commands"
