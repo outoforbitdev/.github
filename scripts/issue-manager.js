@@ -60,14 +60,18 @@ async function createOrUpdateIssues(octokit, results, config, org) {
  */
 async function findExistingIssue(octokit, org, repoName, guidelineId) {
   try {
-    const query = `repo:${org}/${repoName} is:issue is:open label:guideline-check ${guidelineId}`;
-
-    const { data } = await octokit.search.issuesAndPullRequests({
-      q: query,
-      per_page: 1,
+    // List all open issues in the repo
+    const { data: issues } = await octokit.issues.listForRepo({
+      owner: org,
+      repo: repoName,
+      state: 'open',
+      per_page: 100,
     });
 
-    return data.items.length > 0 ? data.items[0] : null;
+    // Find issue with matching guideline ID in title
+    // Title format is: [Guideline Check] G-01: Description
+    const existingIssue = issues.find(issue => issue.title.includes(guidelineId));
+    return existingIssue || null;
   } catch (error) {
     console.error(`Error searching for existing issue: ${error.message}`);
     return null;
