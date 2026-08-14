@@ -48,7 +48,12 @@ jobs:
           GITHUB_ORG: outoforbitdev
         run: |
           CREATE_ISSUES_FLAG=""
-          if [ "${{ github.event.inputs.create-issues }}" = "true" ]; then
+          # Create issues by default for scheduled and push triggers
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "push" ]; then
+            CREATE_ISSUES_FLAG="--create-issues"
+          fi
+          # For workflow_dispatch, only create issues if explicitly requested
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.create-issues }}" = "true" ]; then
             CREATE_ISSUES_FLAG="--create-issues"
           fi
 
