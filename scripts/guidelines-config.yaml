@@ -111,9 +111,10 @@ guidelines:
           - "conventional-pre-commit"
 
 # Issue creation settings
+# Issue creation settings
+# Note: Issue creation is controlled entirely by CLI flags (--create-issues, --dry-run)
+# This section controls the format and labels for created issues
 issue-creation:
-  # Enable automatic issue creation for unmet guidelines
-  enabled: false
   # Labels to add to created issues
   labels:
     - "guideline-check"
@@ -121,6 +122,3 @@ issue-creation:
   include-guideline-number: true
   # Prefix for issue titles (e.g., "[Guideline Check] G-01: ...")
   title-prefix: "[Guideline Check]"
-
-# Dry-run mode (preview issues without creating them)
-dry-run: false

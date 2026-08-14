@@ -79,8 +79,8 @@ async function main() {
     // Print summary
     printSummary(results, summaryStats);
 
-    // Handle issue creation if enabled and not dry-run
-    if (config['issue-creation']?.enabled && !args.dryRun && args.createIssues) {
+    // Handle issue creation only if --create-issues flag is explicitly passed and not in dry-run mode
+    if (args.createIssues && !args.dryRun) {
       console.log(`\n📝 Creating/updating GitHub issues...`);
       await issueManager.createOrUpdateIssues(octokit, results, config, args.org);
     }
