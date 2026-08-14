@@ -56,15 +56,3 @@ jobs:
             --org outoforbitdev \
             --config guidelines-config.yaml \
             $CREATE_ISSUES_FLAG
-
-      - name: Comment on workflow run
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: context.workflow,
-              ref: context.ref
-            });
