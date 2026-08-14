@@ -7,9 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       create-issues:
-        description: "Create issues for unmet guidelines"
+        description: "Create issues for unmet guidelines (overrides config)"
         required: false
         default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 # Declare default permissions as read only
 permissions: read-all
@@ -40,7 +44,7 @@ jobs:
           GITHUB_ORG: outoforbitdev
         run: |
           CREATE_ISSUES_FLAG=""
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.create-issues }}" = "true" ]; then
+          if [ "${{ github.event.inputs.create-issues }}" = "true" ]; then
             CREATE_ISSUES_FLAG="--create-issues"
           fi
 
