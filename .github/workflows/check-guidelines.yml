@@ -26,10 +26,7 @@ jobs:
   check-guidelines:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      # Note: Issues write permission is for the current repo only
-      # Use PAT_TOKEN secret for org-wide repo and issue access
-      issues: write
+      id-token: write # Required for OIDC authentication to Infisical
     steps:
       - name: Checkout .github repository
         uses: actions/checkout@v4
