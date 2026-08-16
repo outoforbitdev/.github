@@ -19,8 +19,9 @@ async function main() {
     process.exit(1);
   }
 
-  if (!process.env.GITHUB_TOKEN) {
-    console.error('Error: GITHUB_TOKEN environment variable is required');
+  const token = process.env.PAT_TOKEN || process.env.GITHUB_TOKEN;
+  if (!token) {
+    console.error('Error: PAT_TOKEN or GITHUB_TOKEN environment variable is required');
     process.exit(1);
   }
 
@@ -34,7 +35,7 @@ async function main() {
   const config = yaml.parse(fs.readFileSync(configPath, 'utf8'));
 
   // Initialize GitHub API client
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  const octokit = new Octokit({ auth: token });
 
   console.log(`\n📋 Organization Guideline Verification`);
   console.log(`Organization: ${args.org}`);
