@@ -1,0 +1,31 @@
+{
+  "name": "@outoforbitdev/guideline-checker",
+  "version": "1.0.0",
+  "description": "Automated script to verify organization repositories follow guidelines",
+  "main": "check-guidelines.js",
+  "bin": {
+    "check-guidelines": "check-guidelines.js"
+  },
+  "scripts": {
+    "check": "node check-guidelines.js --org outoforbitdev --dry-run",
+    "check-create-issues": "node check-guidelines.js --org outoforbitdev --create-issues",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "organization",
+    "compliance",
+    "guidelines",
+    "automation"
+  ],
+  "author": "outoforbitdev",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^19.0.0",
+    "yaml": "^2.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

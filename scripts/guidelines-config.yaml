@@ -1,0 +1,124 @@
+# Organization Guideline Verification Configuration
+# Defines which guidelines to check, file patterns, and repository exclusions
+
+organization: outoforbitdev
+
+# Repository filtering
+repository-filter:
+  # Skip archived repositories
+  skip-archived: true
+  # Skip private repositories (set to false to include private repos)
+  skip-private: true
+  # Skip forked repositories
+  skip-forks: true
+
+# Repositories to exclude from checks (by name)
+excluded-repositories:
+  # The .github repo has different requirements (it hosts the guideline script itself)
+  - .github
+  # Add other repos to exclude as needed
+  # - example-repo
+  # - archived-test
+
+# Guidelines to verify
+guidelines:
+  # TODO: Re-enable G-01 after repos have been updated with documentation structure
+  # - id: "G-01"
+  #   name: "Documentation Structure"
+  #   description: "Repository follows consistent documentation structure with docs/internal/ directory"
+  #   enabled: true
+  #   checks:
+  #     - type: "directory-exists"
+  #       path: "docs/internal"
+  #     - type: "file-exists"
+  #       path: "docs/README.md"
+  #     - type: "file-exists"
+  #       path: "docs/internal/README.md"
+
+  - id: "G-02"
+    name: "Justfile Commands"
+    description: "Repository includes Justfile with required commands"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: "Justfile"
+      - type: "file-contains"
+        path: "Justfile"
+        patterns:
+          - "^setup:"
+          - "^install:"
+          - "^test:"
+          - "^lint:"
+          - "^lint-write:"
+          - "^gate:"
+
+  - id: "G-03"
+    name: "Dependabot Configuration"
+    description: "Repository is configured with Dependabot for automated dependency updates"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: ".github/dependabot.yml"
+
+  - id: "G-04"
+    name: "GitHub Workflows"
+    description: "Repository includes required GitHub Actions workflows (test, scorecard, release)"
+    enabled: true
+    checks:
+      - type: "file-exists"
+        path: ".github/workflows/scorecard.yml"
+      - type: "file-exists"
+        path: ".github/workflows/test.yml"
+      - type: "file-exists"
+        paths:
+          - ".github/workflows/release.yml"
+          - ".github/workflows/npm_publish.yml"
+        require-one: true
+
+  - id: "G-05"
+    name: "GitHub Workflow Triggers"
+    description: "Required workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)"
+    enabled: true
+    checks:
+      - type: "file-contains"
+        path: ".github/workflows/test.yml"
+        patterns:
+          - "pull_request"
+          - "push"
+      - type: "file-contains"
+        path: ".github/workflows/scorecard.yml"
+        patterns:
+          - "schedule:"
+          - "cron:"
+          - "push"
+      - type: "file-contains"
+        path: ".github/workflows/release.yml"
+        patterns:
+          - "push"
+
+  - id: "G-06"
+    name: "Git Hooks & Conventional Commits"
+    description: "Repository uses pre-commit for git hooks with conventional commits enforcement"
+    enabled: true
+    checks:
+      # Check for pre-commit configuration file
+      - type: "file-exists"
+        path: ".pre-commit-config.yaml"
+      # Check that pre-commit config includes conventional-pre-commit for commit message linting
+      - type: "file-contains"
+        path: ".pre-commit-config.yaml"
+        patterns:
+          - "conventional-pre-commit"
+
+# Issue creation settings
+# Issue creation settings
+# Note: Issue creation is controlled entirely by CLI flags (--create-issues, --dry-run)
+# This section controls the format and labels for created issues
+issue-creation:
+  # Labels to add to created issues
+  labels:
+    - "type: chore"
+  # Include guideline number in issue title for easy reference
+  include-guideline-number: true
+  # Prefix for issue titles (e.g., "[Guideline Check] G-01: ...")
+  title-prefix: "chore:"

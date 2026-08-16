@@ -1,0 +1,67 @@
+name: check-guidelines
+
+on:
+  schedule:
+    # Run every Sunday at 9:00 AM UTC (same as Dependabot)
+    - cron: "0 9 * * 0"
+  workflow_dispatch:
+    inputs:
+      create-issues:
+        description: "Create issues for unmet guidelines (overrides config)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+# Declare default permissions as read only
+permissions: read-all
+
+jobs:
+  check-guidelines:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC authentication to Infisical
+    steps:
+      - name: Checkout .github repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        working-directory: ./scripts
+        run: npm install
+
+      - name: Get PAT token from Infisical
+        uses: infisical/secrets-action@77ab1f4ccd183a543cb5b42435fbd181189f4995
+        with:
+          method: "oidc"
+          identity-id: "4ea584b6-5e93-4bae-9dc6-5b2bf4505046"
+          project-slug: "github-actions-o2kc"
+          env-slug: "prod"
+
+      - name: Run guideline checks
+        working-directory: ./scripts
+        env:
+          # Map GUIDELINE_CHECKER_TOKEN from Infisical to PAT_TOKEN for the script
+          PAT_TOKEN: ${{ env.GUIDELINE_CHECKER_TOKEN }}
+          GITHUB_ORG: outoforbitdev
+        run: |
+          CREATE_ISSUES_FLAG=""
+          # Create issues by default for scheduled runs
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            CREATE_ISSUES_FLAG="--create-issues"
+          fi
+          # For workflow_dispatch, only create issues if explicitly requested
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.create-issues }}" = "true" ]; then
+            CREATE_ISSUES_FLAG="--create-issues"
+          fi
+
+          node check-guidelines.js \
+            --org outoforbitdev \
+            --config guidelines-config.yaml \
+            $CREATE_ISSUES_FLAG

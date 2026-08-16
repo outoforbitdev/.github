@@ -6,7 +6,7 @@ This document outlines the standards and best practices for all repositories in 
 2. **Standardized workflows**: Uniform configurations enable standardized agentic workflows and tooling.
 3. **Safety and security**: Consistent security practices across all repositories reduce organizational risk.
 
-## Documentation Structure
+## G-01: Documentation Structure
 
 All repositories should follow a consistent documentation structure to aid discoverability and navigation.
 
@@ -77,7 +77,7 @@ docs/
 
 Refer to the [library-galaxy-map](https://github.com/outoforbitdev/library-galaxy-map/tree/main/docs) repository for an exemplary documentation structure.
 
-## Justfile Commands
+## G-02: Justfile Commands
 
 All repositories should include a `justfile` with the following standard commands for consistency across the organization:
 
@@ -125,7 +125,7 @@ gate: test lint
     npm run type-check
 ```
 
-## Dependabot Configuration
+## G-03: Dependabot Configuration
 
 Every repository must run Dependabot to automate dependency updates and maintain security.
 
@@ -167,7 +167,7 @@ updates:
 
 Adjust the `package-ecosystem`, `reviewers`, and other fields as appropriate for your repository.
 
-## GitHub Workflows
+## G-04: GitHub Workflows
 
 All repositories should include the following standardized GitHub Actions workflows. These workflows enable visibility into repository health and status across the organization.
 
@@ -301,40 +301,76 @@ Display workflow status badges in your repository's main README.md:
 
 Organization-level workflow status can be viewed in a centralized dashboard once scripts are in place.
 
-## Git Hooks
+## G-05: GitHub Workflow Triggers
 
-Git hooks help maintain code quality and consistency by automatically checking commits before they are created.
+All required GitHub Actions workflows must have the correct triggers configured to ensure they run at the appropriate times.
 
-### Recommended Tool: Husky
+### Trigger Requirements
 
-The current recommended approach for implementing git hooks is [Husky](https://typicode.github.io/husky/), which provides an easy-to-use interface for managing git hooks in JavaScript/Node.js projects.
+**Test Workflow** (`.github/workflows/test.yml`):
+- `pull_request` — Trigger on all pull requests (required)
+- `push` to `main` branch — Trigger on commits to main (required)
+- `workflow_dispatch` — Manual trigger capability (optional)
 
-### Setup Instructions (Using Husky)
+**Scorecard Workflow** (`.github/workflows/scorecard.yml`):
+- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0` (required)
+- `push` to `main` branch — Trigger on commits to main (required)
+- `branch_protection_rule` — Trigger on branch protection rule changes (optional)
+- `workflow_dispatch` — Manual trigger capability (optional)
 
-1. Install Husky (typically done in the `setup` justfile target):
+**Cron Schedule Requirement:** The schedule must run at least weekly (7 days or less between runs) to maintain security and compliance visibility.
+
+**Release Workflow** (`.github/workflows/release.yml` or `npm_publish.yml`):
+- `push` to `main` branch — Trigger on commits to main (required)
+- `workflow_dispatch` — Manual trigger capability (optional)
+
+These triggers ensure that code quality checks run on every PR, security assessments run on schedule and main updates, and releases are created automatically when code is merged.
+
+## G-06: Git Hooks & Conventional Commits
+
+Git hooks help maintain code quality and consistency by automatically checking commits before they are created. All repositories must use [pre-commit](https://pre-commit.com/) for git hook management.
+
+Pre-commit is a language-agnostic framework that works with any programming language, making it ideal for polyglot repositories and consistent across the organization.
+
+### Setup Instructions
+
+1. Install pre-commit:
    ```bash
-   npm install husky --save-dev
-   npx husky install
+   brew install pre-commit  # macOS
+   pip install pre-commit   # Linux/Python
    ```
 
-2. Add hooks as needed:
-   ```bash
-   # Example: Add commit message linting
-   npx husky add .husky/commit-msg 'npx commitlint --edit "$1"'
-   
-   # Example: Add pre-commit linting and tests
-   npx husky add .husky/pre-commit 'npm run lint && npm test'
+2. Create `.pre-commit-config.yaml` in your repository root with conventional commits enforcement:
+   ```yaml
+   repos:
+     - repo: https://github.com/compilerla/conventional-pre-commit
+       rev: v2.4.0
+       hooks:
+         - id: conventional-pre-commit
+           stages: [commit-msg]
+     
+     # Add other hooks as needed for your project
+     - repo: https://github.com/pre-commit/pre-commit-hooks
+       rev: v4.5.0
+       hooks:
+         - id: trailing-whitespace
+         - id: end-of-file-fixer
+         - id: check-yaml
    ```
 
-3. Configure `commitlint` in your `package.json` or create a `commitlintrc.js` file to enforce conventional commits.
+3. Install the git hooks:
+   ```bash
+   pre-commit install --hook-type commit-msg
+   ```
 
-### Future Evaluation
+4. Test the setup:
+   ```bash
+   pre-commit run --all-files
+   ```
 
-This recommendation is currently being evaluated and may be revised before becoming a hard requirement. Other solutions like the `pre-commit` framework are suitable alternatives depending on project language and needs.
+### Conventional Commits Standard
 
-### Conventional Commits
-
-The organization follows Conventional Commits format. Pre-commit hooks should enforce this.
+All commits must follow the Conventional Commits format:
 
 **Format**: `<type>(<scope>): <subject>`
 
@@ -342,14 +378,57 @@ The organization follows Conventional Commits format. Pre-commit hooks should en
 
 **Example**: `feat(auth): add JWT token refresh mechanism`
 
+### Migration from Husky
+
+Repositories currently using Husky should migrate to pre-commit:
+
+1. Remove Husky: `npm uninstall husky`
+2. Remove `.husky/` directory: `rm -rf .husky/`
+3. Remove husky hooks from `package.json`
+4. Set up pre-commit as described above
+5. Add `.pre-commit-config.yaml` to version control
+
+### Verification
+
+The automated guideline checker verifies that all repositories have `.pre-commit-config.yaml` configured with conventional commits enforcement via `conventional-pre-commit`.
+
 ## Compliance Checking
 
-The organization plans to implement:
+### Automated Guideline Verification
 
-1. **Automated Script**: A script to check compliance with these guidelines across all repositories.
-2. **Agent-based Evaluation**: An agent prompt to evaluate less-deterministic guidelines on-demand (when tokens are available).
+An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
 
-Repository maintainers should regularly review this document and ensure their repositories meet all guidelines.
+- **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
+- **G-02: Justfile Commands** — Verifies Justfile has required commands (setup, install, test, lint, lint-write, gate)
+- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
+- **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
+- **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
+- **G-06: Git Hooks & Conventional Commits** — Verifies `.pre-commit-config.yaml` exists and includes `conventional-pre-commit` for commit message enforcement
+
+### How the Process Works
+
+1. **Automated Scanning**: The script runs on a cron schedule and checks all repositories in the organization
+2. **Issue Creation**: If guidelines are not met, GitHub issues are automatically created in the non-compliant repositories
+3. **Duplicate Prevention**: The script checks for existing issues to avoid creating duplicates
+4. **Status Tracking**: Issues are labeled with guideline IDs for easy tracking and filtering
+
+### Resolving Guideline Violations
+
+If your repository receives a guideline violation issue:
+
+1. Read the issue description to understand which guideline is not met
+2. Review the specific section in this document for implementation instructions
+3. Make the necessary changes to your repository
+4. Commit and push your changes
+5. The guideline check will verify compliance on the next scheduled run (weekly)
+
+### Future Enhancements
+
+- **Agent-based Evaluation**: An agent prompt to evaluate less-deterministic guidelines on-demand (when tokens are available), such as documentation quality and code standards compliance.
+
+### Manual Compliance Check
+
+Repository maintainers should regularly review this document and can run manual compliance checks using the guideline verification script in the `.github` repository.
 
 ## Migration Path
 
