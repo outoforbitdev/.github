@@ -205,6 +205,7 @@ async function runChecksViaAPI(octokit, repo, guidelines) {
     results[guideline.id] = {
       passed: allPassed,
       name: guideline.name,
+      description: guideline.description,
       checks: checkResults,
     };
   }
