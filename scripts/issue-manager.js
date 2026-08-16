@@ -92,14 +92,14 @@ async function createIssue(octokit, org, repoName, guidelineId, guidelineResult,
   const includeNumber = issueConfig['include-guideline-number'] !== false;
 
   const title = includeNumber
-    ? `${titlePrefix} ${guidelineId}: ${guidelineResult.name}`
+    ? `${titlePrefix} [${guidelineId}] ${guidelineResult.name}`
     : `${titlePrefix} ${guidelineResult.name}`;
 
   const body = generateIssueBody(guidelineId, guidelineResult);
   const labels = issueConfig.labels || ['guideline-check'];
 
   // Add guideline ID as a label
-  const allLabels = [...labels, guidelineId];
+  const allLabels = [...labels];
 
   try {
     await octokit.issues.create({

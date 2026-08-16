@@ -19,9 +19,9 @@ async function main() {
     process.exit(1);
   }
 
-  const token = process.env.PAT_TOKEN || process.env.GITHUB_TOKEN;
+  const token = process.env.PAT_TOKEN || process.env.GUIDELINE_CHECKER_TOKEN || process.env.GITHUB_TOKEN;
   if (!token) {
-    console.error('Error: PAT_TOKEN or GITHUB_TOKEN environment variable is required');
+    console.error('Error: PAT_TOKEN, GUIDELINE_CHECKER_TOKEN, or GITHUB_TOKEN environment variable is required');
     process.exit(1);
   }
 

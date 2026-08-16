@@ -117,8 +117,8 @@ guidelines:
 issue-creation:
   # Labels to add to created issues
   labels:
-    - "guideline-check"
+    - "type: chore"
   # Include guideline number in issue title for easy reference
   include-guideline-number: true
   # Prefix for issue titles (e.g., "[Guideline Check] G-01: ...")
-  title-prefix: "[Guideline Check]"
+  title-prefix: "chore:"
