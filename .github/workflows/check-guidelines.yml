@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Get PAT token from Infisical
-        uses: infisical/secrets-action@77ab1f4ccd183a543cb5b42435fbd181189f4995
+        uses: infisical/secrets-action@6cd3f7c0e4cc0d2395ee4ef414eb6eeb5d3e73db
         with:
           method: "oidc"
           identity-id: "4ea584b6-5e93-4bae-9dc6-5b2bf4505046"
