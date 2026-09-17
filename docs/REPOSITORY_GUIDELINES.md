@@ -81,7 +81,7 @@ Refer to the [library-galaxy-map](https://github.com/outoforbitdev/library-galax
 
 All repositories should include a `justfile` with the following standard commands for consistency across the organization:
 
-- **`setup`**: One-time repository setup (install tools, configure environment, initialize git hooks, etc.)
+- **`bootstrap`**: One-time repository setup (install tools, configure environment, initialize git hooks, etc.)
 - **`install`**: Install dependencies
 - **`test`**: Run the test suite
 - **`lint`**: Run linters and format checkers
@@ -96,8 +96,8 @@ This standardization enables:
 ### Example justfile
 
 ```justfile
-# Setup: one-time repository initialization
-setup:
+# Bootstrap: one-time repository initialization
+bootstrap:
     # Install dependencies and configure environment
     @echo "Setting up repository..."
     npm install
@@ -399,7 +399,7 @@ The automated guideline checker verifies that all repositories have `.pre-commit
 An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
 
 - **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
-- **G-02: Justfile Commands** — Verifies Justfile has required commands (setup, install, test, lint, lint-write, gate)
+- **G-02: Justfile Commands** — Verifies Justfile has required commands (bootstrap, install, test, lint, lint-write, gate)
 - **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
 - **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
 - **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
