@@ -14,6 +14,6 @@ permissions: read-all
 
 jobs:
   labels:
-    uses: outoforbitdev/reusable-workflows-library/.github/workflows/label-manager.yml@8fb3405555561af2c714e9d54dc5b9bbe3dd92f8 # v1.0.0
+    uses: outoforbitdev/reusable-workflows-library/.github/workflows/label-manager.yml@6d3deb76a8bc67b0c56bfae3e58d9b9566a967d0 # v1.3.0
     permissions:
       issues: write
