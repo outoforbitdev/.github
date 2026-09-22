@@ -21,8 +21,6 @@ permissions: read-all
 jobs:
   check-guidelines:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write # Required for OIDC authentication to Infisical
     steps:
       - name: Checkout .github repository
         uses: actions/checkout@v7
@@ -36,19 +34,10 @@ jobs:
         working-directory: ./scripts
         run: npm install
 
-      - name: Get PAT token from Infisical
-        uses: infisical/secrets-action@6cd3f7c0e4cc0d2395ee4ef414eb6eeb5d3e73db
-        with:
-          method: "oidc"
-          identity-id: "4ea584b6-5e93-4bae-9dc6-5b2bf4505046"
-          project-slug: "github-actions-o2kc"
-          env-slug: "prod"
-
       - name: Run guideline checks
         working-directory: ./scripts
         env:
-          # Map GUIDELINE_CHECKER_TOKEN from Infisical to PAT_TOKEN for the script
-          PAT_TOKEN: ${{ env.GUIDELINE_CHECKER_TOKEN }}
+          PAT_TOKEN: ${{ secrets.GUIDELINE_CHECKER_TOKEN }}
           GITHUB_ORG: outoforbitdev
         run: |
           CREATE_ISSUES_FLAG=""
