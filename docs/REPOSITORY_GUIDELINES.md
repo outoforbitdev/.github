@@ -132,9 +132,10 @@ Every repository must run Dependabot to automate dependency updates and maintain
 ### Configuration Schedule
 
 **Frequency**: Weekly updates  
-**Recommended Timing**: Sundays at 9:00 AM UTC
+**Required Timing**: Mondays at 2:00 AM UTC (Sunday night in US timezones)  
+**Timezone**: Omit the `timezone` field, because Dependabot defaults to UTC.
 
-**Rationale**: Weekly Sunday updates allow the team to address pull requests throughout the week, ensuring dependencies are kept current while providing ample time for review and testing.
+**Rationale**: Weekly updates that arrive before the work week begins allow the team to address pull requests throughout the week, ensuring dependencies are kept current while providing ample time for review and testing. All Dependabot schedules in a repository, including every package ecosystem and GitHub Actions, should use the same timing.
 
 ### Setup Instructions
 
@@ -147,8 +148,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "sunday"
-      time: "09:00"
+      day: "monday"
+      time: "02:00"
     commit-message:
       prefix: "chore"
       prefix-scope: "deps"
@@ -161,8 +162,8 @@ updates:
   #   directory: "/"
   #   schedule:
   #     interval: "weekly"
-  #     day: "sunday"
-  #     time: "09:00"
+  #     day: "monday"
+  #     time: "02:00"
 ```
 
 Adjust the `package-ecosystem`, `reviewers`, and other fields as appropriate for your repository.
