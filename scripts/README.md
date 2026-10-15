@@ -10,7 +10,7 @@ The guideline verification script:
 2. Checks each repository against defined guidelines
 3. Creates GitHub issues for any unmet requirements
 4. Avoids creating duplicate issues
-5. Runs automatically on a weekly cron schedule (Sundays 9:00 AM UTC)
+5. Runs automatically on a weekly cron schedule (Mondays 2:00 AM UTC)
 
 ## Quick Start
 

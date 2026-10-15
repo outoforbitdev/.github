@@ -192,7 +192,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 9 * * 0"  # Weekly, Sunday at 9:00 AM UTC (same as Dependabot)
+    - cron: "0 2 * * 1"  # Weekly, Monday at 2:00 AM UTC (same as Dependabot)
   workflow_dispatch: {}  # Manual trigger to run the workflow on demand
 
 jobs:
@@ -314,7 +314,7 @@ All required GitHub Actions workflows must have the correct triggers configured 
 - `workflow_dispatch` — Manual trigger capability (optional)
 
 **Scorecard Workflow** (`.github/workflows/scorecard.yml`):
-- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0` (required)
+- `schedule` — Weekly or more frequent cron (recommended: Monday 2:00 AM UTC): `0 2 * * 1` (required)
 - `push` to `main` branch — Trigger on commits to main (required)
 - `branch_protection_rule` — Trigger on branch protection rule changes (optional)
 - `workflow_dispatch` — Manual trigger capability (optional)
