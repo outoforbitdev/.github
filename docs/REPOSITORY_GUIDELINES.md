@@ -397,7 +397,7 @@ The automated guideline checker verifies that all repositories have `.pre-commit
 
 ### Automated Guideline Verification
 
-An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
+An automated script runs weekly (Mondays at 2:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
 
 - **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
 - **G-02: Justfile Commands** — Verifies Justfile has required commands (bootstrap, install, test, lint, lint-write, gate)

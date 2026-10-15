@@ -109,7 +109,7 @@ The GitHub token requires the following permissions:
 
 The script is automatically triggered by a GitHub Actions workflow (`.github/workflows/check-guidelines.yml`) that runs:
 
-- **Weekly schedule**: Sundays at 9:00 AM UTC (same as Dependabot)
+- **Weekly schedule**: Mondays at 2:00 AM UTC (same as Dependabot)
 - **Manual trigger**: Via `workflow_dispatch` in the GitHub Actions UI
 
 ## Output
