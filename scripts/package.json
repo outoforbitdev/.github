@@ -9,7 +9,7 @@
   "scripts": {
     "check": "node check-guidelines.js --org outoforbitdev --dry-run",
     "check-create-issues": "node check-guidelines.js --org outoforbitdev --create-issues",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test"
   },
   "keywords": [
     "github",

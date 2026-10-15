@@ -2,8 +2,8 @@ name: check-guidelines
 
 on:
   schedule:
-    # Run every Sunday at 9:00 AM UTC (same as Dependabot)
-    - cron: "0 9 * * 0"
+    # Run every Monday at 2:00 AM UTC (same as Dependabot)
+    - cron: "0 2 * * 1"
   workflow_dispatch:
     inputs:
       create-issues:

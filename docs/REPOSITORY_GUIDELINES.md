@@ -132,9 +132,10 @@ Every repository must run Dependabot to automate dependency updates and maintain
 ### Configuration Schedule
 
 **Frequency**: Weekly updates  
-**Recommended Timing**: Sundays at 9:00 AM UTC
+**Required Timing**: Mondays at 2:00 AM UTC (Sunday night in US timezones)  
+**Timezone**: Omit the `timezone` field, because Dependabot defaults to UTC.
 
-**Rationale**: Weekly Sunday updates allow the team to address pull requests throughout the week, ensuring dependencies are kept current while providing ample time for review and testing.
+**Rationale**: Weekly updates that arrive before the work week begins allow the team to address pull requests throughout the week, ensuring dependencies are kept current while providing ample time for review and testing. All Dependabot schedules in a repository, including every package ecosystem and GitHub Actions, should use the same timing.
 
 ### Setup Instructions
 
@@ -147,8 +148,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "sunday"
-      time: "09:00"
+      day: "monday"
+      time: "02:00"
     commit-message:
       prefix: "chore"
       prefix-scope: "deps"
@@ -161,8 +162,8 @@ updates:
   #   directory: "/"
   #   schedule:
   #     interval: "weekly"
-  #     day: "sunday"
-  #     time: "09:00"
+  #     day: "monday"
+  #     time: "02:00"
 ```
 
 Adjust the `package-ecosystem`, `reviewers`, and other fields as appropriate for your repository.
@@ -191,7 +192,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 9 * * 0"  # Weekly, Sunday at 9:00 AM UTC (same as Dependabot)
+    - cron: "0 2 * * 1"  # Weekly, Monday at 2:00 AM UTC (same as Dependabot)
   workflow_dispatch: {}  # Manual trigger to run the workflow on demand
 
 jobs:
@@ -313,7 +314,7 @@ All required GitHub Actions workflows must have the correct triggers configured 
 - `workflow_dispatch` — Manual trigger capability (optional)
 
 **Scorecard Workflow** (`.github/workflows/scorecard.yml`):
-- `schedule` — Weekly or more frequent cron (recommended: Sunday 9:00 AM UTC): `0 9 * * 0` (required)
+- `schedule` — Weekly or more frequent cron (recommended: Monday 2:00 AM UTC): `0 2 * * 1` (required)
 - `push` to `main` branch — Trigger on commits to main (required)
 - `branch_protection_rule` — Trigger on branch protection rule changes (optional)
 - `workflow_dispatch` — Manual trigger capability (optional)
@@ -396,11 +397,11 @@ The automated guideline checker verifies that all repositories have `.pre-commit
 
 ### Automated Guideline Verification
 
-An automated script runs weekly (Sundays at 9:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
+An automated script runs weekly (Mondays at 2:00 AM UTC, aligned with Dependabot) to verify that all repositories in the organization follow these guidelines:
 
 - **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
 - **G-02: Justfile Commands** — Verifies Justfile has required commands (bootstrap, install, test, lint, lint-write, gate)
-- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
+- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists and every update entry runs weekly on Monday at 2:00 AM UTC
 - **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
 - **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
 - **G-06: Git Hooks & Conventional Commits** — Verifies `.pre-commit-config.yaml` exists and includes `conventional-pre-commit` for commit message enforcement
