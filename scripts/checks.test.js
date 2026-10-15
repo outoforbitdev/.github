@@ -68,3 +68,11 @@ test('fails when the file is missing or has no updates', () => {
 test('fails on invalid YAML', () => {
   assert.match(checkDependabotSchedule(makeRepo('updates: [\n'), {}).reason, /Invalid YAML/);
 });
+
+test('evaluateDependabotSchedule checks raw content without a checkout', () => {
+  const { evaluateDependabotSchedule } = require('./checks');
+  const good = `version: 2\nupdates:\n${entry('npm', valid)}`;
+  const bad = `version: 2\nupdates:\n${entry('npm', '      interval: "daily"')}`;
+  assert.strictEqual(evaluateDependabotSchedule(good, {}).passed, true);
+  assert.strictEqual(evaluateDependabotSchedule(bad, {}).passed, false);
+});

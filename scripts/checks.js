@@ -142,11 +142,11 @@ function checkFileContains(repoPath, filePath, patterns) {
 /**
  * Checks that every update entry in a Dependabot config uses the required schedule.
  * An omitted timezone is treated as UTC, which is the Dependabot default.
- * @param {string} repoPath - Path to the repository
+ * @param {string} content - Raw content of the Dependabot config file
  * @param {Object} check - Check object with optional path, interval, day, time and timezone
  * @returns {Object} Result of the check
  */
-function checkDependabotSchedule(repoPath, check) {
+function evaluateDependabotSchedule(content, check) {
   const filePath = check.path || '.github/dependabot.yml';
   const expected = {
     interval: check.interval || 'weekly',
@@ -155,15 +155,10 @@ function checkDependabotSchedule(repoPath, check) {
     timezone: check.timezone || 'UTC',
   };
   const label = `Dependabot schedule: ${filePath}`;
-  const fullPath = path.join(repoPath, filePath);
-
-  if (!fs.existsSync(fullPath)) {
-    return { passed: false, check: label, reason: `File not found: ${filePath}` };
-  }
 
   let config;
   try {
-    config = yaml.parse(fs.readFileSync(fullPath, 'utf8'));
+    config = yaml.parse(content);
   } catch (error) {
     return { passed: false, check: label, reason: `Invalid YAML in ${filePath}: ${error.message}` };
   }
@@ -199,6 +194,27 @@ function checkDependabotSchedule(repoPath, check) {
 }
 
 /**
+ * Checks the Dependabot schedule of a config file in a local repository checkout
+ * @param {string} repoPath - Path to the repository
+ * @param {Object} check - Check object with optional path, interval, day, time and timezone
+ * @returns {Object} Result of the check
+ */
+function checkDependabotSchedule(repoPath, check) {
+  const filePath = check.path || '.github/dependabot.yml';
+  const fullPath = path.join(repoPath, filePath);
+
+  if (!fs.existsSync(fullPath)) {
+    return {
+      passed: false,
+      check: `Dependabot schedule: ${filePath}`,
+      reason: `File not found: ${filePath}`,
+    };
+  }
+
+  return evaluateDependabotSchedule(fs.readFileSync(fullPath, 'utf8'), check);
+}
+
+/**
  * Evaluates the results of multiple checks for a guideline
  * @param {Array} checkResults - Array of check results
  * @param {Object} check - The check configuration (for requireOne logic)
@@ -226,5 +242,6 @@ module.exports = {
   checkFileExists,
   checkFileContains,
   checkDependabotSchedule,
+  evaluateDependabotSchedule,
   evaluateGuidelineResults,
 };

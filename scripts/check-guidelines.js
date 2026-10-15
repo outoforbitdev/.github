@@ -231,6 +231,8 @@ async function runCheckViaAPI(octokit, repo, check) {
         return await checkFileViaAPI(octokit, owner, repoName, check);
       case 'file-contains':
         return await checkFileContainsViaAPI(octokit, owner, repoName, check);
+      case 'dependabot-schedule':
+        return await checkDependabotScheduleViaAPI(octokit, owner, repoName, check);
       default:
         return { passed: false, reason: `Unknown check type: ${check.type}` };
     }
@@ -325,6 +327,29 @@ async function checkFileContainsViaAPI(octokit, owner, repo, check) {
       passed: false,
       reason: `Missing patterns in ${filePath}: ${missingPatterns.join(', ')}`,
     };
+  } catch (error) {
+    if (error.status === 404) {
+      return { passed: false, reason: `File not found: ${filePath}` };
+    }
+    throw error;
+  }
+}
+
+/**
+ * Check the Dependabot schedule of a repository via GitHub API
+ * @param {Octokit} octokit - GitHub API client
+ * @param {string} owner - Repository owner
+ * @param {string} repo - Repository name
+ * @param {Object} check - Check configuration
+ * @returns {Promise<Object>} Result of the check
+ */
+async function checkDependabotScheduleViaAPI(octokit, owner, repo, check) {
+  const filePath = check.path || '.github/dependabot.yml';
+
+  try {
+    const { data } = await octokit.repos.getContent({ owner, repo, path: filePath });
+    const content = Buffer.from(data.content, 'base64').toString('utf8');
+    return checks.evaluateDependabotSchedule(content, check);
   } catch (error) {
     if (error.status === 404) {
       return { passed: false, reason: `File not found: ${filePath}` };
