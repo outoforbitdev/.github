@@ -401,7 +401,7 @@ An automated script runs weekly (Mondays at 2:00 AM UTC, aligned with Dependabot
 
 - **G-01: Documentation Structure** — Verifies presence of `docs/internal/` directory structure
 - **G-02: Justfile Commands** — Verifies Justfile has required commands (bootstrap, install, test, lint, lint-write, gate)
-- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists
+- **G-03: Dependabot Configuration** — Verifies `.github/dependabot.yml` exists and every update entry runs weekly on Monday at 2:00 AM UTC
 - **G-04: GitHub Workflows** — Verifies required workflows exist (test, scorecard, release/publish)
 - **G-05: GitHub Workflow Triggers** — Verifies workflows have correct triggers (push, pull_request, schedule, workflow_dispatch)
 - **G-06: Git Hooks & Conventional Commits** — Verifies `.pre-commit-config.yaml` exists and includes `conventional-pre-commit` for commit message enforcement

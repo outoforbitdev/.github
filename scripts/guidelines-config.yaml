@@ -59,6 +59,13 @@ guidelines:
     checks:
       - type: "file-exists"
         path: ".github/dependabot.yml"
+      # Every update entry must run weekly on Monday at 02:00 UTC
+      - type: "dependabot-schedule"
+        path: ".github/dependabot.yml"
+        interval: "weekly"
+        day: "monday"
+        time: "02:00"
+        timezone: "UTC"
 
   - id: "G-04"
     name: "GitHub Workflows"

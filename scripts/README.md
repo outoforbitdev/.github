@@ -60,7 +60,7 @@ The script verifies the following guidelines defined in `../docs/REPOSITORY_GUID
 
 - **G-01: Documentation Structure** — `docs/internal/` directory structure
 - **G-02: Justfile Commands** — Required commands in `Justfile`
-- **G-03: Dependabot Configuration** — `.github/dependabot.yml` exists
+- **G-03: Dependabot Configuration** — `.github/dependabot.yml` exists and every update entry uses the Monday 2:00 AM UTC weekly schedule
 - **G-04: GitHub Workflows** — Required workflows (test, scorecard, release)
 - **G-05: Git Hooks & Conventional Commits** — `.husky/` and commit lint config
 
@@ -70,7 +70,7 @@ To add a new guideline:
 
 1. Add a new section to `../docs/REPOSITORY_GUIDELINES.md` with a guideline number (G-06, etc.)
 2. Add the guideline to `guidelines-config.yaml` in the `guidelines` section
-3. Specify the `checks` for the guideline (file-exists, file-contains, directory-exists, etc.)
+3. Specify the `checks` for the guideline (file-exists, file-contains, directory-exists, dependabot-schedule, etc.)
 4. Run the script to test the new guideline
 
 ### Example: Adding G-06

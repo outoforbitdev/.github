@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const yaml = require('yaml');
 
 /**
  * Runs all checks for a repository
@@ -42,6 +43,8 @@ async function runCheck(repoPath, check) {
       return checkFileExists(repoPath, check.path, check.paths, check['require-one']);
     case 'file-contains':
       return checkFileContains(repoPath, check.path, check.patterns);
+    case 'dependabot-schedule':
+      return checkDependabotSchedule(repoPath, check);
     default:
       return { passed: false, reason: `Unknown check type: ${check.type}` };
   }
@@ -137,6 +140,65 @@ function checkFileContains(repoPath, filePath, patterns) {
 }
 
 /**
+ * Checks that every update entry in a Dependabot config uses the required schedule.
+ * An omitted timezone is treated as UTC, which is the Dependabot default.
+ * @param {string} repoPath - Path to the repository
+ * @param {Object} check - Check object with optional path, interval, day, time and timezone
+ * @returns {Object} Result of the check
+ */
+function checkDependabotSchedule(repoPath, check) {
+  const filePath = check.path || '.github/dependabot.yml';
+  const expected = {
+    interval: check.interval || 'weekly',
+    day: check.day || 'monday',
+    time: check.time || '02:00',
+    timezone: check.timezone || 'UTC',
+  };
+  const label = `Dependabot schedule: ${filePath}`;
+  const fullPath = path.join(repoPath, filePath);
+
+  if (!fs.existsSync(fullPath)) {
+    return { passed: false, check: label, reason: `File not found: ${filePath}` };
+  }
+
+  let config;
+  try {
+    config = yaml.parse(fs.readFileSync(fullPath, 'utf8'));
+  } catch (error) {
+    return { passed: false, check: label, reason: `Invalid YAML in ${filePath}: ${error.message}` };
+  }
+
+  const updates = config && Array.isArray(config.updates) ? config.updates : [];
+  if (updates.length === 0) {
+    return { passed: false, check: label, reason: `No updates defined in ${filePath}` };
+  }
+
+  const problems = [];
+  for (const update of updates) {
+    const ecosystem = update['package-ecosystem'] || 'unknown';
+    const schedule = update.schedule || {};
+    const actual = {
+      interval: schedule.interval,
+      day: schedule.day,
+      time: schedule.time,
+      timezone: schedule.timezone === undefined ? 'UTC' : schedule.timezone,
+    };
+    for (const key of Object.keys(expected)) {
+      const actualValue = actual[key] === undefined ? undefined : String(actual[key]);
+      if (actualValue !== expected[key]) {
+        problems.push(`${ecosystem}: ${key} is ${actualValue === undefined ? 'unset' : `"${actualValue}"`}, expected "${expected[key]}"`);
+      }
+    }
+  }
+
+  return {
+    passed: problems.length === 0,
+    check: label,
+    reason: problems.length === 0 ? null : `Schedule mismatch in ${filePath}: ${problems.join('; ')}`,
+  };
+}
+
+/**
  * Evaluates the results of multiple checks for a guideline
  * @param {Array} checkResults - Array of check results
  * @param {Object} check - The check configuration (for requireOne logic)
@@ -163,5 +225,6 @@ module.exports = {
   checkDirectoryExists,
   checkFileExists,
   checkFileContains,
+  checkDependabotSchedule,
   evaluateGuidelineResults,
 };
