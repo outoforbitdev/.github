@@ -44,9 +44,6 @@ function normalize(repo, raw) {
     title: raw.title,
     url: raw.html_url,
     author: raw.user ? raw.user.login : "ghost",
-    labels: (raw.labels || []).map((label) =>
-      typeof label === "string" ? label : label.name,
-    ),
     createdAt: raw.created_at,
   };
 }

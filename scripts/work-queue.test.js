@@ -26,7 +26,6 @@ function item(overrides = {}) {
     title: "Title",
     url: "https://github.com/o/repo/issues/1",
     author: "alice",
-    labels: [],
     createdAt: "2026-11-09T10:00:00Z",
     ...overrides,
   };
@@ -47,15 +46,7 @@ test("formatAge returns whole days and never goes negative", () => {
   assert.strictEqual(formatAge("2026-11-13T10:00:00Z", NOW), "0d");
 });
 
-test("formatItemLine includes repo, title, age, author, and labels", () => {
-  const line = formatItemLine(item({ labels: ["bug", "p1"] }), NOW);
-  assert.strictEqual(
-    line,
-    "[repo#1 Title](https://github.com/o/repo/issues/1) · 3d · alice · bug, p1",
-  );
-});
-
-test("formatItemLine omits the label segment when there are no labels", () => {
+test("formatItemLine includes repo, title, age, and author", () => {
   const line = formatItemLine(item(), NOW);
   assert.strictEqual(
     line,
@@ -127,7 +118,6 @@ test("fetchOpenItems skips archived repos, drafts, and PRs in issues", async () 
         title: `t${number}`,
         html_url: `u${number}`,
         user: { login: "bob" },
-        labels: [{ name: "bug" }],
         created_at: "2026-11-01T00:00:00Z",
         ...extra,
       });

@@ -11,9 +11,6 @@ const MAX_DESCRIPTION_LENGTH = 4000;
 /** Maximum characters of an item title before it is truncated. */
 const MAX_TITLE_LENGTH = 100;
 
-/** Maximum characters of the label list on one item line. */
-const MAX_LABELS_LENGTH = 80;
-
 /** Embed accent colors, as hex strings without the leading #. */
 const COLORS = {
   pullRequest: "8957e5",
@@ -67,10 +64,9 @@ function formatAge(createdAt, now) {
  * @param {string} item.title - Title
  * @param {string} item.url - Web URL
  * @param {string} item.author - Author login
- * @param {string[]} item.labels - Label names
  * @param {string} item.createdAt - ISO creation timestamp
  * @param {Date} now - Current time
- * @returns {string} Line such as "[repo#1 Title](url) · 3d · author · bug"
+ * @returns {string} Line such as "[repo#1 Title](url) · 3d · author"
  */
 function formatItemLine(item, now) {
   const label = escapeLinkText(
@@ -81,9 +77,6 @@ function formatItemLine(item, now) {
     formatAge(item.createdAt, now),
     item.author,
   ];
-  if (item.labels.length > 0) {
-    parts.push(truncate(item.labels.join(", "), MAX_LABELS_LENGTH));
-  }
   return parts.join(" · ");
 }
 
