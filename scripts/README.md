@@ -208,3 +208,38 @@ To improve the guideline checker:
 ## License
 
 MIT
+
+## Daily Work Queue Summary
+
+The `work-queue-summary` workflow posts every open pull request and issue in the organization to Discord once a day.
+
+- **Schedule:** `0 10 * * *` UTC, which is 6am EDT or 5am EST. It can also be started manually with `workflow_dispatch`.
+- **Scope:** all non-archived repositories. Draft pull requests are excluded, and pull requests are not repeated in the issues list.
+- **Format:** pull requests and issues are posted as separate embeds, oldest first. Each line shows the repo, title, age, and author. Long lists are split across several embeds that stay under Discord's 4096 character description limit. On days with nothing open, a short "No open pull requests or issues" message is posted.
+- **Code:** `work-queue.js` holds the formatting and splitting logic, and `work-queue-summary.js` fetches the data from GitHub. Run `npm test` in this directory to run the unit tests.
+
+### Required secrets
+
+Add these as repository (or organization) secrets:
+
+| Secret                           | Purpose                                                                                                                                                          |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GH_WORK_QUEUE_TOKEN`            | Token that can read issues and pull requests in every organization repo. A fine-grained token needs `Metadata: read`, `Issues: read`, and `Pull requests: read`. |
+| `DISCORD_WORK_QUEUE_WEBHOOK_URL` | Discord webhook URL for the target channel. Never log or commit it.                                                                                              |
+
+The workflow itself runs with no `GITHUB_TOKEN` permissions beyond `contents: read` to check out the repo.
+
+### Dry run
+
+Start the workflow manually and set `dry-run` to true to fetch the data and build the messages without posting to Discord. The `work-queue-summary` workflow also runs automatically as a dry run on pull requests that touch the summary code, and `work-queue-summary-test` runs the unit tests. The dry run is skipped for pull requests from forks and Dependabot because they cannot read the secrets.
+
+To preview locally:
+
+```bash
+export GITHUB_TOKEN=your_github_token
+node work-queue-summary.js --org outoforbitdev
+```
+
+### Failures
+
+The workflow fails with a clear error if the token is missing, the GitHub fetch fails, or Discord rejects a message.

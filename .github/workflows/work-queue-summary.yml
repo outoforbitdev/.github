@@ -1,0 +1,80 @@
+name: work-queue-summary
+
+# Posts a daily summary of every open pull request and issue in the
+# organization to Discord. See scripts/README.md for setup details.
+
+on:
+  schedule:
+    # 10:00 UTC is 6am EDT (summer) and 5am EST (winter).
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Fetch and build the messages but do not send them"
+        required: false
+        default: false
+        type: boolean
+  # On pull requests the workflow always runs as a dry run: it fetches the real
+  # data and builds the messages, but never posts to Discord.
+  pull_request:
+    paths:
+      - ".github/workflows/work-queue-summary.yml"
+      - "scripts/work-queue*.js"
+      - "scripts/package*.json"
+
+# Declare default permissions as none. The org is read with GH_WORK_QUEUE_TOKEN.
+permissions: {}
+
+jobs:
+  build:
+    name: Build messages
+    # Secrets are not available to pull requests from forks or Dependabot.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      messages: ${{ steps.summary.outputs.messages }}
+    steps:
+      - name: Checkout .github repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        working-directory: ./scripts
+        run: npm ci
+
+      - name: Build work queue messages
+        id: summary
+        working-directory: ./scripts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_WORK_QUEUE_TOKEN }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+        run: node work-queue-summary.js
+
+  send:
+    name: Send ${{ matrix.message.title }}
+    needs: build
+    strategy:
+      # Send one at a time so the messages arrive in order.
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        message: ${{ fromJSON(needs.build.outputs.messages) }}
+    uses: outoforbitdev/reusable-workflows-library/.github/workflows/send-discord-message.yml@main
+    with:
+      embed-title: ${{ matrix.message.title }}
+      embed-description: ${{ matrix.message.description }}
+      embed-color: ${{ matrix.message.color }}
+      dry-run: ${{ github.event_name == 'pull_request' || inputs.dry-run == true }}
+    secrets:
+      webhook-url: ${{ secrets.DISCORD_WORK_QUEUE_WEBHOOK_URL }}
