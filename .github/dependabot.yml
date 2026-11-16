@@ -8,6 +8,6 @@ updates:
       day: "monday"
       time: "02:00"
     labels:
-      - "type: chore"
+      - "type: ci"
       - "work: obvious"
       - "effort: 1"
