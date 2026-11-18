@@ -5,8 +5,11 @@ name: work-queue-summary
 
 on:
   schedule:
-    # 10:00 UTC is 6am EDT (summer) and 5am EST (winter).
-    - cron: "0 10 * * *"
+    # 12:17am Eastern, year round (the timezone field handles EST/EDT). The
+    # minute is deliberately off the hour: GitHub delays scheduled runs at the
+    # top of the hour due to congestion.
+    - cron: "17 0 * * *"
+      timezone: "America/New_York"
   workflow_dispatch:
     inputs:
       dry-run:
