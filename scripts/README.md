@@ -213,7 +213,7 @@ MIT
 
 The `work-queue-summary` workflow posts every open pull request and issue in the organization to Discord once a day.
 
-- **Schedule:** `0 10 * * *` UTC, which is 6am EDT or 5am EST. It can also be started manually with `workflow_dispatch`.
+- **Schedule:** `17 0 * * *` in the `America/New_York` timezone (12:17am Eastern year round). It can also be started manually with `workflow_dispatch`.
 - **Scope:** all non-archived repositories. Draft pull requests are excluded, and pull requests are not repeated in the issues list.
 - **Format:** pull requests and issues are posted as separate embeds, oldest first. Each line shows the repo, title, age, and author. Long lists are split across several embeds that stay under Discord's 4096 character description limit. On days with nothing open, a short "No open pull requests or issues" message is posted.
 - **Code:** `work-queue.js` holds the formatting and splitting logic, and `work-queue-summary.js` fetches the data from GitHub. Run `npm test` in this directory to run the unit tests.
